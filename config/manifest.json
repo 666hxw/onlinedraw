@@ -1,0 +1,23 @@
+{
+  "app/app.js": "/public/js/app/app.js",
+  "js/chunk/0.js": "/public/js/chunk/0.js",
+  "img/loading.gif": "/public/img/loading.gif",
+  "js/vendor.js": "/public/js/vendor.js",
+  "font/element-icons.ttf": "/public/font/element-icons.ttf",
+  "font/element-icons.woff": "/public/font/element-icons.woff",
+  "vendor.js": "/public/js/vendor.js",
+  "deps": {
+    "app/app.js": {
+      "js": [
+        "/public/js/vendor.js",
+        "/public/js/app/app.js"
+      ],
+      "css": []
+    }
+  },
+  "info": {
+    "publicPath": "/public/",
+    "buildPath": "public",
+    "mapped": true
+  }
+}
