@@ -5,3 +5,36 @@
     border-radius: 5px;
   }
 }
+.draw {
+  &-tools {
+    // 
+    .el-col {
+      width: 50px;
+      [class^=el-icon-] {
+        margin-top: 3px;
+        font-size: 30px;
+      }
+    }
+    // 工具栏通用样式
+    &-util {
+      position: relative;
+      border: 1px #ddd solid;
+      border-radius: 4px;
+      padding: 4px;
+      width: 40px;
+      height: 40px;
+    }
+    // 画笔宽度
+    &-line{
+      &-width {
+        div {
+          position: absolute;
+          margin: 0;
+          padding: 0;
+          border-radius: 50%;
+        }
+      }
+    }
+    // 
+  }
+}

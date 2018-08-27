@@ -3,11 +3,17 @@ export default {
     return {
       width: '', // 画布宽度
       height: '', // 画布高度
-      color: '#409EFF', // 拾色器初始化颜色值
+      lineColor: '#409EFF', // 画笔初始化颜色值
+      lineWidth: 1, // 画笔初始化宽度
       canvas: null, // canvas对象
       context: null, // canvas上下文对象
       startDraw: false, // 是否开始绘画标识
-      drawHistory: [], // 记录每次绘制历史，用于做撤销，具体数据存什么格式还未设计好，目前想法是将一次绘制导出base64存在这里，但是内存开销太大了
+      drawHistory: [], // 记录每次绘制历史，用于做撤销 { time: 时间戳, data: base64数据 }
+      lineW: {
+        min: 1,
+        max: 100,
+      },
+      downloadName: 'canvas.png', // 导出的默认下载名
     };
   },
   methods: {
@@ -45,7 +51,6 @@ export default {
       const { canvas, context } = this;
       // 监听鼠标按下，一次绘制开始
       canvas.addEventListener('mousedown', e => {
-        console.log('mouse down');
         this.startDraw = true;
         context.beginPath(); // 开启绘画路径
       });
@@ -54,19 +59,83 @@ export default {
         if (!this.startDraw) {
           return;
         }
-        console.log('mouse move');
-        console.log(e.clientX, e.clientY, canvas.offsetLeft, canvas.offsetTop);
         const x = e.clientX - canvas.offsetLeft;
         const y = e.clientY - canvas.offsetTop;
         context.lineTo(x, y);
-        context.strokeStyle = this.color;
+        context.closePath(); // 关闭绘画路径
+        context.strokeStyle = this.lineColor;
+        context.lineWidth = this.lineWidth;
         context.stroke();
+        context.moveTo(x, y); // 设置画笔起点为当前鼠标位置
       });
       // 监听鼠标释放，结束一次绘制过程
       canvas.addEventListener('mouseup', e => {
-        console.log('mouse up');
         this.startDraw = false;
-        context.closePath(); // 关闭绘画路径
+        this.recordDraw();
+      });
+    },
+    /**
+     * 将当前画布导出成二进制或者base64
+     * @param {Boolean} isBlob 是否导成二进制数据
+     * @return {Blob, String}
+     */
+    exportImg(isBlob, cb) {
+      const canvas = this.canvas;
+      if (isBlob) {
+        canvas.toBlob(function(blob) {
+          cb && cb(blob);
+        }, 'image/png');
+      } else {
+        return canvas.toDataURL();
+      }
+    },
+    /**
+     * 记录本次绘制信息
+     */
+    recordDraw() {
+      this.drawHistory.push({
+        time: new Date().getTime(),
+        data: this.exportImg(),
+      });
+    },
+    /**
+     * 清空画布
+     */
+    clearCanvas() {
+      const { canvas, context } = this;
+      // context.clearRect(0, 0, canvas.width, canvas.height);
+      context.fillStyle = '#fff';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+    },
+    // 撤销
+    undo() {
+      this.clearCanvas(); // 清空当前画布
+      this.drawHistory.pop();
+      const prev = this.drawHistory.pop(); // 获取并删除最后一个历史记录
+      if (prev) {
+        const img = new Image();
+        img.onload = () => {
+          this.context.drawImage(img, 0, 0); // 绘制新的图片
+        };
+        img.src = prev.data;
+      }
+    },
+    // 导出画布
+    download() {
+      const data = this.exportImg();
+      // 触发下载行为
+      const a = document.createElement('a');
+      a.href = data;
+      a.download = this.downloadName;
+      a.click();
+    },
+    // 清空画布
+    clear() {
+      this.$alert('确定清空画布?', '提示', {
+        confirmButtonText: '确定',
+        callback: action => {
+          this.clearCanvas();
+        }
       });
     }
   },
