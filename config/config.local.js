@@ -34,11 +34,19 @@ module.exports = app => {
 
   // redis config
   exports.redis = {
-    client: {
-      port: 6379, // Redis port
-      host: '127.0.0.1', // Redis host
-      password: '123456',
-      db: 0,
+    clients: {
+      userInfo: { // 用户信息
+        port: 6379, // Redis port
+        host: '127.0.0.1', // Redis host
+        password: '123456',
+        db: 0,
+      },
+      session: { // 用户登录态
+        port: 6379, // Redis port
+        host: '127.0.0.1', // Redis host
+        password: '123456',
+        db: 1,
+      },
     },
   };
 

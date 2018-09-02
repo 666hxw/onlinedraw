@@ -1,5 +1,5 @@
 export default {
-  username: [
+  name: [
     { required: true, message: '请输入登录的用户或邮箱', trigger: 'blur' },
   ],
   password: [

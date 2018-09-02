@@ -6,6 +6,9 @@ module.exports = app => {
 
   // 建表
   const UserSchema = new Schema({
+    email: { // login email
+      type: String,
+    },
     name: { // username
       type: String,
     },

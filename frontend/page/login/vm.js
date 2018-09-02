@@ -5,7 +5,7 @@ export default {
     return {
       formValidate,
       form: {
-        username: '',
+        name: '',
         password: '',
         code: '',
       },
@@ -13,15 +13,18 @@ export default {
   },
   methods: {
     login() {
-      const { username, password, code } = this.form;
+      const { name, password, code } = this.form;
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          this.$http.post('/api/loign/signIn', {
-            username,
+          this.$http.post('/api/user/signIn', {
+            name,
             password,
             code,
-          }).then((res) => {
-            this.$router.push('/');
+          }).then(({ data }) => {
+            console.log(data);
+            if (data.status) {
+              this.$router.push('/');
+            }
           });
         }
       });
