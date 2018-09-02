@@ -1,7 +1,7 @@
 <template>
   <app-layout>
     <el-container>
-      <el-aside width="250px">
+      <el-aside width="250px" v-if="showMenu">
         <el-menu
           default-active="0"
           class="el-menu-vertical-demo"
@@ -65,7 +65,7 @@
               },
             ]
           },
-        ]
+        ],
       }
     },
     methods: {
@@ -74,7 +74,9 @@
       }
     },
     computed: {
-
+      showMenu: function() {
+        return false;
+      },
     },
     mounted(){
 

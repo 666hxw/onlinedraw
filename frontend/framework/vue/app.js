@@ -18,7 +18,15 @@ App.init = options => {
 
 
 App.client = options => {
-  Vue.prototype.$http = require('axios');
+  const axios = require('axios');
+  // 请求增加 _csrf 参数
+  axios.interceptors.request.use((config) => {
+    config.data._csrf = window.__INITIAL_STATE__.csrf;
+    return config;
+  }, (error) => {
+    return Promise.reject(error);
+  });
+  Vue.prototype.$http = axios;
   if (options.store) {
     options.store.replaceState(Object.assign({}, App.data(), options.store.state));
   } else if (window.__INITIAL_STATE__) {
@@ -65,6 +73,5 @@ App.use = component => {
 App.component = (name, component) => {
   Vue.component(name, component);
 };
-
 
 export default App;

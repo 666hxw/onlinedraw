@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
   egg: true,
   framework: 'vue',
-  entry: { 'app/app': 'frontend/page/app/app.js' },
+  entry: { 'app/app': 'frontend/main.js' },
   alias: {
     app: 'frontend/framework/vue/app.js',
     asset: 'frontend/asset',
