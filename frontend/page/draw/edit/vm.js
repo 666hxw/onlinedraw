@@ -110,8 +110,8 @@ export default {
     // 撤销
     undo() {
       this.clearCanvas(); // 清空当前画布
-      this.drawHistory.pop();
-      const prev = this.drawHistory.pop(); // 获取并删除最后一个历史记录
+      this.drawHistory.pop(); // 删除最后一个历史记录
+      const prev = this.drawHistory[this.drawHistory.length - 1]; // 获取最后一个历史记录
       if (prev) {
         const img = new Image();
         img.onload = () => {

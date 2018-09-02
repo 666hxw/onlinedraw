@@ -23,6 +23,7 @@
     "egg-cors": "^2.0.0",
     "egg-logger": "^1.5.0",
     "egg-mongoose": "^3.1.0",
+    "egg-redis": "^2.0.0",
     "egg-validate": "^1.0.0",
     "egg-view-vue-ssr": "^3.0.2",
     "element-ui": "^2.0.8",

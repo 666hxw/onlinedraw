@@ -4,7 +4,7 @@ module.exports = app => {
   const exports = {};
 
   exports.siteFile = {
-    '/favicon.ico': fs.readFileSync(path.join(app.baseDir, 'app/web/asset/images/favicon.ico'))
+    '/favicon.ico': fs.readFileSync(path.join(app.baseDir, 'frontend/asset/images/favicon.ico'))
   };
 
   exports.view = {
@@ -32,7 +32,9 @@ module.exports = app => {
   exports.keys = '123456';
 
   exports.middleware = [
-    'access'
+    'requireUser',
+    'authUser',
+    'permission',
   ];
 
   return exports;

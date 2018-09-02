@@ -8,9 +8,9 @@ run/
 
 public/
 node_modules/
-app/mocks
-app/web/store
+app/mocks/
+frontend/store/
 plugins/
-app/web/asset/
+frontend/asset/
 app/view/
 test.js
