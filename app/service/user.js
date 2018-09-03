@@ -6,7 +6,7 @@ class UserService extends Service {
   }
 
   // 添加、更新
-  async edit(data) {
+  async save(data) {
     let ret = '';
     let user = {};
     if (data.id) { // 更新用户信息
@@ -25,9 +25,7 @@ class UserService extends Service {
 
   async detail(id) {
     const ret = await this.ctx.model.User.findOne({
-      where: {
-        _id: id,
-      },
+      _id: id,
     });
     return ret;
   }
@@ -46,5 +44,11 @@ class UserService extends Service {
     return true;
   }
 
+  // 从 redis 根据 token 获取对应用户信息
+  async getUserInfoFromCache(token) {
+    const username = await this.app.redis.get('session').scard(token); // 根据 token 获取 用户名
+    const ret = await this.app.redis.get('userInfo').scard(username); // 根据用户名获取用户信息
+    return ret;
+  }
 }
 module.exports = UserService;

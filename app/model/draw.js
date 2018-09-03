@@ -12,7 +12,7 @@ module.exports = app => {
     userid: { // drawing's userid
       type: String,
     },
-    content: { // 画板内容 base64
+    data: { // 画板内容 base64
       type: String,
     }
   });

@@ -33,9 +33,13 @@
       <el-col :span="1">
         <i class="el-icon-delete" @click="clear"></i>
       </el-col>
-      <!-- 保存画布 -->
+      <!-- 导出画布 -->
       <el-col :span="1">
         <i class="el-icon-download" @click="download"></i>
+      </el-col>
+      <!-- 保存画布 -->
+      <el-col :span="1">
+        <i class="el-icon-upload" @click="save"></i>
       </el-col>
     </el-row>
     <!-- 画布 -->

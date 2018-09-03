@@ -21,7 +21,15 @@ App.client = options => {
   const axios = require('axios');
   // 请求增加 _csrf 参数
   axios.interceptors.request.use((config) => {
-    config.data._csrf = window.__INITIAL_STATE__.csrf;
+    if (config.data) {
+      config.data._csrf = window.__INITIAL_STATE__.csrf;
+      config.data.token = localStorage.getItem('token');
+    } else {
+      config.data = {
+        _csrf: window.__INITIAL_STATE__.csrf,
+        token: localStorage.getItem('token'),
+      };
+    }
     return config;
   }, (error) => {
     return Promise.reject(error);

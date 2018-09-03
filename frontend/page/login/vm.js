@@ -21,9 +21,11 @@ export default {
             password,
             code,
           }).then(({ data }) => {
-            console.log(data);
-            if (data.status) {
+            if (data.code === 200) {
+              localStorage.setItem('token', data.data.token);
               this.$router.push('/');
+            } else {
+              this.$alert(data.msg || '登录失败');
             }
           });
         }

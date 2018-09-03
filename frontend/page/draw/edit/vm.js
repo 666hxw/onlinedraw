@@ -137,9 +137,47 @@ export default {
           this.clearCanvas();
         }
       });
+    },
+    // 保存画布
+    save() {
+      this.$http.post('/api/draw/save', {
+        id: this.id,
+        data: this.exportImg(),
+        name: this.name,
+      }).then(({ data }) => {
+        if (data.code === 200) {
+          this.$message.success(data.msg || '保存成功');
+        } else {
+          this.$message.error(data.msg || '保存失败，请稍后再试');
+        }
+      });
+    },
+    // 获取详细信息
+    detail() {
+      this.$http.get('/api/draw/detail', {
+        params: {
+          id: this.id,
+        }
+      }).then(({ data }) => {
+        if (data.code === 200) {
+          this.data = data.data.data;
+          this.name = data.data.name;
+          const img = new Image();
+          img.onload = () => {
+            this.context.drawImage(img, 0, 0); // 绘制新的图片
+          };
+          img.src = this.data;
+        } else {
+          this.$message.error(data.msg || '获取信息失败');
+        }
+      });
     }
   },
   mounted() {
+    this.id = this.$route.query.id || '';
     this.init();
+    if (this.id) {
+      this.detail();
+    }
   }
 };
