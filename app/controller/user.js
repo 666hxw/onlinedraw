@@ -28,16 +28,13 @@ class UserController extends Controller {
     if (msg) {
       ctx.body = {
         code: 401,
-        state: {
-          code: 401,
-          msg,
-        },
+        msg,
         data: {},
       };
       return;
     }
 
-    const userInfo = await service.user.list({
+    let userInfo = await service.user.list({
       password,
       $or: [
         { name },
@@ -49,29 +46,31 @@ class UserController extends Controller {
       // 用户不存在
       ctx.body = {
         code: 401,
-        state: {
-          code: 401,
-          msg: '用户名/邮箱不存在，或者密码错误',
-        },
+        msg: '用户名/邮箱不存在，或者密码错误',
         data: {},
       };
       return;
+    }
+    userInfo = userInfo[0];
+
+    // 判断是否该用户已经登录
+    if (service.user.getTokenByUserName(userInfo.name)) {
+      await service.user.clearCacheByName(name);
     }
 
     // 这里不用清除 redis 中的登录态信息，只要重新覆盖 key 为用户名的值即可，因为 redis 中的登录态是 set 结构
     // 但是 session 会存在很多无用数据
     const sessionId = uuid(); // 生成一个登录态id
     // TODO 保存用户登录态到redis
-    await service.user.keepAlive(sessionId, userInfo[0]);
+    await service.user.keepAlive(sessionId, userInfo.name);
+    // 缓存用户信息
+    await service.user.cacheUserInfo(userInfo);
     // 在当前实例中保存用户信息
-    ctx.user = userInfo[0];
+    ctx.user = userInfo;
     // SPA 使用 token 方式 做验证
     ctx.body = {
       code: 200,
-      state: {
-        code: 200,
-        msg: '登陆成功',
-      },
+      msg: '登陆成功',
       data: {
         token: sessionId, // 讲 sessionId 作为 token 返回给前端
       },
