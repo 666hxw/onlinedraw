@@ -32,7 +32,7 @@ module.exports = app => {
   exports.keys = '123456';
 
   exports.middleware = [
-    'requireUser',
+    'authToken',
     'authUser',
     'permission',
   ];

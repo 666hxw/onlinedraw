@@ -1,8 +1,26 @@
 const Service = require('egg').Service;
 class DrawService extends Service {
   async list(where, page = 1, pageSize = 10) {
-    const ret = await this.ctx.model.User.find(where).limit(pageSize).skip(page - 1);
-    return ret;
+    // Mongoose's Aggregate Api: https://wohugb.gitbooks.io/mongoose/aggregate.html
+    const ret = await this.ctx.model.Draw.aggregate([{
+      $match: where,
+    },
+    { $limit: pageSize },
+    { $skip: page - 1 },
+    {
+      $project: {
+        id: '$_id',
+        _id: 0,
+        name: 1,
+      }
+    }]).exec();
+    if (ret) {
+      return {
+        list: ret,
+        total: await this.ctx.model.Draw.count(where),
+      };
+    }
+    return null;
   }
 
   // 添加、更新
@@ -10,7 +28,7 @@ class DrawService extends Service {
     const { ctx } = this;
     let ret = '';
     let draw = '';
-    const user = this.service.user.getUserInfoFromCache(data.token); // 获取用户信息
+    const user = this.service.user.getUserFromByToken(data.token); // 获取用户信息
     if (!user) {
       ctx.body = {
         code: 403,

@@ -1,6 +1,7 @@
 export default {
   data() {
     return {
+      dpr: 1,
       width: '', // 画布宽度
       height: '', // 画布高度
       lineColor: '#409EFF', // 画笔初始化颜色值
@@ -27,12 +28,12 @@ export default {
     // 获取屏幕宽高，初始化canva宽高
     initSize() {
       const { canvas, context } = this;
-      const screenW = window.innerWidth;
       const screenH = window.innerHeight;
-      this.width = screenW - 250 - 40;
+      const mainCanvasW = document.querySelector('.canvas').offsetWidth - 1;
+      this.width = mainCanvasW;
       this.height = screenH - 60 - 60 - 60;
       // Get the device pixel ratio, falling back to 1.
-      const dpr = context.webkitBackingStorePixelRatio ||
+      const dpr = this.dpr = context.webkitBackingStorePixelRatio ||
                 context.mozBackingStorePixelRatio ||
                 context.msBackingStorePixelRatio ||
                 context.oBackingStorePixelRatio ||
@@ -45,6 +46,16 @@ export default {
       // Scale all drawing operations by the dpr, so you
       // don't have to worry about the difference.
       context.scale(dpr, dpr);
+    },
+    // 重置 canvas 大小
+    resize() {
+      const { canvas, dpr } = this;
+      const mainCanvasW = document.querySelector('.canvas').offsetWidth - 1;
+      this.width = mainCanvasW;
+      const screenH = window.innerHeight;
+      this.height = screenH - 60 - 60 - 60;
+      canvas.width = this.width * dpr;
+      canvas.height = this.height * dpr;
     },
     // 初始化事件绑定
     initEvent() {
@@ -72,6 +83,10 @@ export default {
       canvas.addEventListener('mouseup', e => {
         this.startDraw = false;
         this.recordDraw();
+      });
+      // 监控窗口缩放
+      window.addEventListener('resize', e => {
+        this.resize();
       });
     },
     /**
@@ -107,17 +122,23 @@ export default {
       context.fillStyle = '#fff';
       context.fillRect(0, 0, canvas.width, canvas.height);
     },
+    // 将一张图片画进 canvas
+    // 注意这个方法是异步，而且如果图片路径是个url，注意不能是跨域图片，如果是，图片服务器需要开启跨域访问
+    drawImg(src) {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        this.context.drawImage(img, 0, 0); // 绘制新的图片
+      };
+      img.src = src;
+    },
     // 撤销
     undo() {
       this.clearCanvas(); // 清空当前画布
       this.drawHistory.pop(); // 删除最后一个历史记录
       const prev = this.drawHistory[this.drawHistory.length - 1]; // 获取最后一个历史记录
       if (prev) {
-        const img = new Image();
-        img.onload = () => {
-          this.context.drawImage(img, 0, 0); // 绘制新的图片
-        };
-        img.src = prev.data;
+        this.drawImg(prev.data);
       }
     },
     // 导出画布

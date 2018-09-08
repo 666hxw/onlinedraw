@@ -59,7 +59,7 @@ class UserService extends Service {
   }
 
   // 从 redis 根据 token 获取对应用户信息
-  async getUserInfoFromCache(token) {
+  async getUserFromByToken(token) {
     const { app } = this;
     const name = await app.redis.get('token').get(token); // 根据 token 获取 用户名
     if (!name) {

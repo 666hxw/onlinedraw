@@ -31,10 +31,16 @@ npm run build
 npm run start
 ```
 
-# 技术架构
+## 技术架构
 
 构建方案基于```easywebpack```的```Egg+Vue```单页应用解决方案
 
 前端框架：```Vue``` + ```Element UI```
 
 后端框架：```Egg.js``` + ```MongoDB``` + ```Redis```
+
+## 基本效果预览
+
+### 画板操作GIF
+![](./docs/images/draw-operate.gif)
+
