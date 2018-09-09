@@ -1,5 +1,8 @@
 node_modules/
 run/
 logs/
+public/
+app/view/
 package-lock.json
 config/manifest.json
+config/config.prod.js
