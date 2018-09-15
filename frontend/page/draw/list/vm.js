@@ -36,6 +36,27 @@ export default {
           id,
         }
       });
+    },
+    del(id) {
+      this.$confirm('确定删除此画板？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$http.get('/api/draw/del', {
+          params: {
+            id,
+          }
+        }).then(({ data }) => {
+          if (data.code === 200) {
+            this.getData(); // 重新请求当前页
+          } else {
+            this.$message.error(data.msg || '删除失败');
+          }
+        }).catch(err => {
+          this.$message.error('删除失败');
+        });
+      });
     }
   },
   mounted() {

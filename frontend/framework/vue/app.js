@@ -19,20 +19,39 @@ App.init = options => {
 
 App.client = options => {
   const axios = require('axios');
-  // 请求增加 _csrf 参数
   axios.interceptors.request.use((config) => {
-    if (config.data) {
-      config.data._csrf = window.__INITIAL_STATE__.csrf;
-      config.data.token = localStorage.getItem('token');
+    // http 请求头增加 token 参数
+    config.headers.Token = localStorage.getItem('token') || '';
+    // http 请求体增加 _csrf 参数
+    if (config.method === 'get') {
+      if (config.params) {
+        config.params._csrf = window.__INITIAL_STATE__.csrf;
+      } else {
+        config.params = {
+          _csrf: window.__INITIAL_STATE__.csrf,
+        };
+      }
     } else {
-      config.data = {
-        _csrf: window.__INITIAL_STATE__.csrf,
-        token: localStorage.getItem('token'),
-      };
+      if (config.data) {
+        config.data._csrf = window.__INITIAL_STATE__.csrf;
+      } else {
+        config.data = {
+          _csrf: window.__INITIAL_STATE__.csrf,
+        };
+      }
     }
     return config;
   }, (error) => {
     return Promise.reject(error);
+  });
+  // 统一封装响应体
+  axios.interceptors.response.use((resp) => {
+    // console.log(resp);
+    if (resp.data.code === 403) {
+      location.href = '/login'; // 跳转到登录页
+      return;
+    }
+    return resp;
   });
   Vue.prototype.$http = axios;
   if (options.store) {

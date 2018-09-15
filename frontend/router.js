@@ -1,12 +1,14 @@
 import Vue from 'vue';
 
 import VueRouter from 'vue-router';
+import VueCookie from 'vue-cookie';
 
 import DrawListView from 'page/draw/list';
 import DrawEidtView from 'page/draw/edit';
 import LoginView from 'page/login';
 
 Vue.use(VueRouter);
+Vue.use(VueCookie);
 
 const router = new VueRouter({
   mode: 'history',
@@ -59,7 +61,7 @@ router.beforeEach((to, from, next) => {
   if (isIgnorePath) {
     next();
   }
-  if (!localStorage.getItem('token')) { // 不存在 token 引导去登陆
+  if (!Vue.cookie.get('token')) { // 不存在 token 引导去登陆
     next('/login');
   }
   next();

@@ -1,10 +1,11 @@
 import Vue from 'vue';
+import dayjs from 'dayjs';
 
 /**
  * 去掉HTML标签
  */
-Vue.filter('removeHtml', input => {
-  return input && input.replace(/<(?:.|\n)*?>/gm, '')
+Vue.filter('removeHtml', str => {
+  return str && str.replace(/<(?:.|\n)*?>/gm, '')
     .replace(/(&rdquo;)/g, '\"')
     .replace(/&ldquo;/g, '\"')
     .replace(/&mdash;/g, '-')
@@ -14,3 +15,7 @@ Vue.filter('removeHtml', input => {
     .replace(/<[\w\s"':=\/]*/, '');
 });
 
+// 格式化时间
+Vue.filter('formatDate', str => {
+  return str ? dayjs(str).format('YYYY-MM-DD hh:mm:ss') : str;
+});

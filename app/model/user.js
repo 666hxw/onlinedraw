@@ -15,6 +15,23 @@ module.exports = app => {
     password: { // user passwd
       type: String,
     },
+    createTime: {
+      type: Date,
+    },
+    updateTime: {
+      type: Date,
+    },
+  });
+
+  UserSchema.pre('save', function(next) {
+    this.createTime = new Date();
+    this.updateTime = new Date();
+    next();
+  });
+
+  UserSchema.pre('update', function(next) {
+    this.updateTime = new Date();
+    next();
   });
 
   // 这里的 User 是 cxt.model 的对象名

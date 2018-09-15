@@ -5,21 +5,25 @@
       style="width: 100%">
       <el-table-column
         prop="name"
-        label="画板"
-        width="180">
+        label="画板">
       </el-table-column>
       <el-table-column
-        prop="createTime"
         label="创建时间"
         width="180">
+        <template slot-scope="scope">
+          {{ scope.row.createTime | formatDate }}
+        </template>
       </el-table-column>
       <el-table-column
-        prop="updateTime"
         label="更新时间"
         width="180">
+        <template slot-scope="scope">
+          {{ scope.row.updateTime | formatDate }}
+        </template>
       </el-table-column>
       <el-table-column
-        label="操作">
+        label="操作"
+        width="200">
         <template slot-scope="scope">
           <el-button
             size="mini"

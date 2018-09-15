@@ -1,17 +1,26 @@
 'use strict';
 
 module.exports = () => {
-  // 验证token是否有效
+  // 验证 token 是否有效
   return async (ctx, next) => {
-    const header = ctx.request.header;
-    // if (!header.auth_token) { // 不存在 token
-    //   if () {
+    const cookies = ctx.cookies;
+    const token = cookies.get('token', { signed: false });
+    const isIgnorePath = ctx.helper.isIgnorePath(ctx.path); // 是否是 api 请求路由
 
-    //   }
-    //   ctx.status = 403;
-    //   ctx.body = 'forbidden';
-    //   return;
-    // }
+    if (!isIgnorePath) {
+      if (!token) { // cookie 中不存在 token
+      } else {
+        const isExistToken = await ctx.service.util.isExistToken(token);
+        if (!isExistToken) {
+          ctx.status = 200;
+          ctx.body = {
+            code: 403,
+            msg: 'token expire',
+          };
+          return;
+        }
+      }
+    }
     await next();
   };
 };

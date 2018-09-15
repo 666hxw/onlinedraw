@@ -3,7 +3,6 @@
 module.exports = app => {
   const mongoose = app.mongoose;
   const Schema = mongoose.Schema;
-
   // 建表
   const DrawSchema = new Schema({
     name: { // drawing  name
@@ -14,7 +13,20 @@ module.exports = app => {
     },
     data: { // 画板内容 base64
       type: String,
-    }
+    },
+    createTime: {
+      type: Date,
+      default: Date.now,
+    },
+    updateTime: {
+      type: Date,
+      default: Date.now,
+    },
+  });
+
+  DrawSchema.pre('update', function(next) {
+    this.updateTime = new Date();
+    next();
   });
 
   return mongoose.model('Draw', DrawSchema);

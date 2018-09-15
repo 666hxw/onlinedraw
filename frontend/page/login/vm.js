@@ -22,7 +22,7 @@ export default {
             code,
           }).then(({ data }) => {
             if (data.code === 200) {
-              localStorage.setItem('token', data.data.token);
+              this.$cookie.set('token', data.data.token);
               this.$router.push('/');
             } else {
               this.$alert(data.msg || '登录失败');

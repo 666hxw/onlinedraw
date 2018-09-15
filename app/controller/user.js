@@ -54,17 +54,17 @@ class UserController extends Controller {
     userInfo = userInfo[0];
 
     // 判断是否该用户已经登录
-    if (service.user.getTokenByUserName(userInfo.name)) {
-      await service.user.clearCacheByName(name);
+    if (service.util.getTokenByUserName(userInfo.name)) {
+      await service.util.clearCacheByName(name);
     }
 
     // 这里不用清除 redis 中的登录态信息，只要重新覆盖 key 为用户名的值即可，因为 redis 中的登录态是 set 结构
     // 但是 session 会存在很多无用数据
     const sessionId = uuid(); // 生成一个登录态id
     // TODO 保存用户登录态到redis
-    await service.user.keepAlive(sessionId, userInfo.name);
+    await service.util.keepAlive(sessionId, userInfo.name);
     // 缓存用户信息
-    await service.user.cacheUserInfo(userInfo);
+    await service.util.cacheUserInfo(userInfo);
     // 在当前实例中保存用户信息
     ctx.user = userInfo;
     // SPA 使用 token 方式 做验证

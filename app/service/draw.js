@@ -12,6 +12,8 @@ class DrawService extends Service {
         id: '$_id',
         _id: 0,
         name: 1,
+        createTime: 1,
+        updateTime: 1,
       }
     }]).exec();
     if (ret) {
@@ -28,7 +30,7 @@ class DrawService extends Service {
     const { ctx } = this;
     let ret = '';
     let draw = '';
-    const user = this.service.user.getUserFromByToken(data.token); // 获取用户信息
+    const user = this.service.util.getUserFromByToken(data.token); // 获取用户信息
     if (!user) {
       ctx.body = {
         code: 403,
