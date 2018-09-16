@@ -2,6 +2,7 @@ const Service = require('egg').Service;
 class DrawService extends Service {
   async list(where, page = 1, pageSize = 10) {
     // Mongoose's Aggregate Api: https://wohugb.gitbooks.io/mongoose/aggregate.html
+    console.log(where);
     const ret = await this.ctx.model.Draw.aggregate([{
       $match: where,
     },

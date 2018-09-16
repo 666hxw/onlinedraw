@@ -2,6 +2,7 @@ export default {
   data() {
     return {
       query: {
+        kw: '',
         page: 1,
         pageSize: 10,
       },
@@ -11,9 +12,10 @@ export default {
   },
   methods: {
     getData() {
-      const { page, pageSize } = this.query;
+      const { page, pageSize, kw } = this.query;
       this.$http.get('/api/draw/list', {
         params: {
+          kw,
           page,
           pageSize,
         },

@@ -7,8 +7,9 @@ class DrawController extends Controller {
     const query = this.ctx.query;
     let where = {};
     if (query.kw) {
+    // TODO 匹配检索中出现的多个反斜杠 \
       where = {
-        name: `/${query.kw}/`,
+        name: new RegExp(`${query.kw}`),
       };
     }
     const page = parseInt(query.page) || 1;
