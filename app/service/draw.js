@@ -43,8 +43,7 @@ class DrawService extends Service {
       ret = await this.ctx.model.Draw.updateOne({
         _id: data.id,
       }, {
-        name: data.name,
-        data: data.data,
+        ...data,
         updateTime: new Date(),
       });
     } else { // 添加用户

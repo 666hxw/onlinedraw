@@ -37,7 +37,9 @@ class DrawController extends Controller {
       this.ctx.body = {
         code: 200,
         msg: '',
-        data: {}
+        data: {
+          id: ret._id
+        }
       };
     } else {
       this.ctx.body = {
@@ -68,7 +70,20 @@ class DrawController extends Controller {
 
   async del() {
     const id = this.ctx.query.id;
-    this.ctx.body = await this.service.draw.del(id);
+    const ret = await this.service.draw.del(id);
+    if (ret.ok) {
+      this.ctx.body = {
+        code: 200,
+        msg: '',
+        data: {},
+      };
+    } else {
+      this.ctx.body = {
+        code: 500,
+        msg: '删除失败',
+        data: {},
+      };
+    }
   }
 }
 

@@ -1,5 +1,13 @@
 <template>
   <div class="draw-container">
+    <el-row style="margin-bottom: 10px;">
+      <el-col :span="12">
+        <el-input v-model="draw.name">
+          <template slot="prepend">画板名</template>
+          <el-button slot="append" icon="el-icon-edit" @click="saveName"></el-button>
+        </el-input>
+      </el-col>
+    </el-row>
     <!-- 绘画工具 -->
     <el-row class="draw-tools">
       <el-col :span="1">
@@ -27,19 +35,27 @@
       </el-col>
       <!-- 撤销 -->
       <el-col :span="1">
-        <i class="el-icon-back" @click="undo"></i>
-      </el-col>
-      <!-- 清空画布 -->
-      <el-col :span="1">
-        <i class="el-icon-delete" @click="clear"></i>
+        <el-tooltip content="撤销" placement="bottom">
+          <el-button type="info" icon="el-icon-back" circle @click="undo"></el-button>
+        </el-tooltip>
       </el-col>
       <!-- 导出画布 -->
       <el-col :span="1">
-        <i class="el-icon-download" @click="download"></i>
+        <el-tooltip content="导出画板" placement="bottom">
+          <el-button type="success" icon="el-icon-picture" circle @click="download"></el-button>
+        </el-tooltip>
       </el-col>
       <!-- 保存画布 -->
       <el-col :span="1">
-        <i class="el-icon-upload" @click="save"></i>
+        <el-tooltip content="保存画板" placement="bottom">
+          <el-button type="primary" icon="el-icon-refresh" circle @click="save"></el-button>
+        </el-tooltip>
+      </el-col>
+      <!-- 清空画布 -->
+      <el-col :span="1">
+        <el-tooltip content="清空画板" placement="bottom">
+          <el-button type="danger" icon="el-icon-delete" circle @click="clear"></el-button>
+        </el-tooltip>
       </el-col>
     </el-row>
     <!-- 画布 -->

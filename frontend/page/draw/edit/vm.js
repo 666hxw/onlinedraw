@@ -15,6 +15,16 @@ export default {
         max: 100,
       },
       downloadName: 'canvas.png', // 导出的默认下载名
+      draw: {
+        id: '',
+        name: '画板-' + new Date().getTime(),
+        data: '',
+      },
+      settings: {
+        autoSave: true,
+        autoSaveTime: 3000, // 每隔3s保存一次
+      },
+      autoSaveInterval: null,
     };
   },
   methods: {
@@ -162,11 +172,37 @@ export default {
     // 保存画布
     save() {
       this.$http.post('/api/draw/save', {
-        id: this.id,
+        id: this.draw.id,
         data: this.exportImg(),
-        name: this.name,
       }).then(({ data }) => {
         if (data.code === 200) {
+          if (data.data.id) {
+            this.id = this.draw.id = data.data.id;
+          }
+          this.$message.success(data.msg || '保存成功');
+        } else {
+          this.$message.error(data.msg || '保存失败，请稍后再试');
+        }
+      });
+    },
+    // 修改画布名称
+    saveName() {
+      const Reg = /\S+/;
+      const value = this.draw.name.trim();
+      console.log(value);
+      if (!Reg.test(value)) {
+        this.$message.error('请输入画板名');
+        return false;
+      }
+      this.$http.post('/api/draw/save', {
+        id: this.draw.id,
+        name: value,
+      }).then(({ data }) => {
+        if (data.code === 200) {
+          if (data.data.id) {
+            this.id = this.draw.id = data.data.id;
+          }
+          this.draw.name = value;
           this.$message.success(data.msg || '保存成功');
         } else {
           this.$message.error(data.msg || '保存失败，请稍后再试');
@@ -181,24 +217,46 @@ export default {
         }
       }).then(({ data }) => {
         if (data.code === 200) {
-          this.data = data.data.data;
-          this.name = data.data.name;
+          this.draw.id = this.id;
+          this.draw.data = data.data.data;
+          this.draw.name = data.data.name;
           const img = new Image();
           img.onload = () => {
             this.context.drawImage(img, 0, 0); // 绘制新的图片
           };
-          img.src = this.data;
+          img.src = this.draw.data;
         } else {
           this.$message.error(data.msg || '获取信息失败');
         }
       });
-    }
+    },
+    // 自动保存画板数据
+    autoSave() {
+      const { settings } = this;
+      this.autoSaveInterval = setInterval(() => {
+        if (!settings.autoSave) {
+          clearInterval(this.autoSaveInterval);
+          this.autoSaveInterval = null;
+          return;
+        }
+        if (!this.drawHistory.length || this.exportImg() === this.drawHistory[this.drawHistory.length - 1]) { // 画板无新内容，不自动保存
+          return;
+        }
+        if (this.startDraw) { // 当前正在绘制，暂不保存
+          return;
+        }
+        this.save();
+      }, settings.autoSaveTime);
+    },
   },
   mounted() {
     this.id = this.$route.query.id || '';
     this.init();
-    if (this.id) {
+    if (this.id && this.$route.path.indexOf('/edit') !== -1) {
       this.detail();
+    }
+    if (this.settings.autoSave) {
+      // this.autoSave();
     }
   }
 };
