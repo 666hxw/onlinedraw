@@ -17,21 +17,12 @@ module.exports = app => {
     },
     createTime: {
       type: Date,
+      default: Date.now,
     },
     updateTime: {
       type: Date,
+      default: Date.now,
     },
-  });
-
-  UserSchema.pre('save', function(next) {
-    this.createTime = new Date();
-    this.updateTime = new Date();
-    next();
-  });
-
-  UserSchema.pre('update', function(next) {
-    this.updateTime = new Date();
-    next();
   });
 
   // 这里的 User 是 cxt.model 的对象名

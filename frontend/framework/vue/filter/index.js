@@ -17,5 +17,5 @@ Vue.filter('removeHtml', str => {
 
 // 格式化时间
 Vue.filter('formatDate', str => {
-  return str ? dayjs(str).format('YYYY-MM-DD hh:mm:ss') : str;
+  return str ? dayjs(str).format('YYYY-MM-DD HH:mm:ss') : str;
 });

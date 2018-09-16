@@ -39,11 +39,12 @@ class DrawService extends Service {
       return;
     }
     if (data.id) { // 更新画板信息
-      ret = await this.ctx.model.Draw.update({
+      ret = await this.ctx.model.Draw.updateOne({
         _id: data.id,
       }, {
         name: data.name,
         data: data.data,
+        updateTime: new Date(),
       });
     } else { // 添加用户
       draw = this.ctx.model.Draw();

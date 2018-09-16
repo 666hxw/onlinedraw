@@ -12,8 +12,9 @@ class UserService extends Service {
     if (data.id) { // 更新用户信息
       user = {
         name: data.name,
+        updateTime: new Date(),
       };
-      ret = await this.ctx.model.User.update(data.id, user);
+      ret = await this.ctx.model.User.updateOne(data.id, user);
     } else { // 添加用户
       user = this.ctx.model.User();
       user.name = data.name;

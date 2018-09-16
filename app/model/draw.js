@@ -24,10 +24,5 @@ module.exports = app => {
     },
   });
 
-  DrawSchema.pre('update', function(next) {
-    this.updateTime = new Date();
-    next();
-  });
-
   return mongoose.model('Draw', DrawSchema);
 };
